@@ -1,0 +1,84 @@
+<%- include('includes/head.ejs') %>
+	</head>
+
+	<body>
+		<%- include('includes/navigation.ejs') %>
+			<main>
+				<div class="hom-body-section">
+					<div class="container">
+						<div class="row">
+							<div class="container">
+								<div class="row">
+									<div class="page-head">
+										<h2>Reservation Search</h2>
+										<div class="head-title">
+											<div class="hl-1"></div>
+											<div class="hl-2"></div>
+											<div class="hl-3"></div>
+										</div>
+										<!-- SEARCH CONTROL -->
+										<div class="col-md-12">
+											<div class="head-typo typo-com collap-expand book-form inn-com-form">
+												<form class="col s12" action="/filter-reservations" method="POST">
+													<div class="row">
+														<b style="float: left; margin-left: 6px;">Search by Guest
+															Name</b>
+														<div class="input-field col s12">
+															<input type="text" class="validate" id="guestName" placeholder="<%= keywords %>"
+																name="guestName">
+															<label>Enter guest name...</label>
+														</div>
+														<div class="input-field col s12">
+															<button type="submit" class="btn" style="margin-top: 5px;">
+																<i class="material-icons" >search</i>
+																Search
+															</button>
+														</div>
+														<div class="input-field col s12">
+															<h5>Found <%= confirmationData &&
+																	Array.isArray(confirmationData) ?
+																	confirmationData.length : 0 %> Results</h5>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<!-- END SEARCH CONTROL  -->
+									</div>
+								</div>
+							</div>
+							<% if(typeof ViewContent !=='undefined' && ViewContent !==null ) { %>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="head-typo typo-com" style="overflow-x: scroll;">
+												<h2>Reservation Data</h2>
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>Booking ID</th>
+															<th>Guest Name</th>
+															<th>Email</th>
+															<th>Phone</th>
+															<th>Number of Guests</th>
+															<th>Date</th>
+															<th>Time</th>
+															<th>Table Type</th>
+															<th>Special Requests</th>
+															<th>Status</th>
+														</tr>
+													</thead> 
+													<!-- the area for table body -->
+													 <tbody>
+															<%- ViewContent %>
+													 </tbody>
+													<!-- end -->
+												</table>
+											</div>
+										</div>
+									</div>
+											<% } %>
+						</div>
+					</div>
+				</div>
+			</main>
+			<%- include('includes/end.ejs') %>
