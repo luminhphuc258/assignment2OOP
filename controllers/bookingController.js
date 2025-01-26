@@ -16,6 +16,7 @@ class BookingController extends BaseController {
         allDataRows = await BookingInfo.fetchAll();
       } else {
         allDataRows = await BookingInfo.fetchById(options.BookingId);
+        allDataRows.booking_id = options.BookingId;
       }
 
       console.log("=== Call render method in bookingController ========")
@@ -33,7 +34,10 @@ class BookingController extends BaseController {
         pageTitle: 'All Reservations',
         path: options.path,
         usingSearchFunction: false,
-        keywords: ''
+        keywords: '',
+        userRole: options.userRole,
+        UserLastName: options.lastname,
+        isLogined: options.isLogined
       });
 
     } catch (error) {
@@ -43,13 +47,27 @@ class BookingController extends BaseController {
 
 
   async getAllBookings(req, res, next) {
-    try {
-      // call render method in this sub-class
-      this.render(res, 'reservationsearch', { usingSearchByID: false, path: '/reservationsearch' });
-
-    } catch (error) {
-      this.handleError(error, req, res, next);
+    if (req.session.isLoggedIn) {
+      try {
+        // call render method in this sub-class
+        this.render(res, 'reservationsearch', {
+          usingSearchByID: false,
+          path: '/reservationsearch',
+          userRole: req.session.userRole,
+          lastname: req.session.lastname,
+          isLogined: req.session.isLoggedIn
+        });
+      } catch (error) {
+        this.handleError(error, req, res, next);
+      }
+    } else {
+      res.render('login', {
+        pageTitle: 'Login Page',
+        isLogined: false
+      });
     }
+
+
   }
 
 
@@ -99,7 +117,13 @@ class BookingController extends BaseController {
       }
 
       // go to confirmation page 
-      this.render(res, 'bookingconfirmation', { usingSearchByID: true, BookingId: bookingId, path: 'bookingconfirmation' });
+      this.render(res, 'bookingconfirmation', {
+        usingSearchByID: true, BookingId: bookingId,
+        path: 'bookingconfirmation',
+        userRole: req.session.userRole,
+        lastname: req.session.lastname,
+        isLogined: true
+      });
 
     } catch (error) {
       this.handleError(error, req, res, next);
@@ -126,7 +150,7 @@ class BookingController extends BaseController {
 
   getBookingInfo(req, res, next) {
     res.json({
-      message: 'Booking confirmation information',
+      message: 'Booking confirmation information'
     });
   }
 }

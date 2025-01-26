@@ -55,8 +55,19 @@ router.post(
 
 // Logout route
 router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/login');
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destruction error:', err);
+      res.status(500).send('Failed to log out');
+    } else {
+      console.log("========ALO OKEM NE")
+      res.render('login', {
+        pageTitle: 'The Panda Restaunt',
+        path: '/login',
+        isLogined: false
+      });
+    }
+  });
 });
 
 module.exports = router;

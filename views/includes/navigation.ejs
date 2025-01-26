@@ -26,6 +26,7 @@
 							</li>
                 <% if(typeof userRole !== 'undefined' && userRole === '0' ) { %>
 									<!-- admin menu -->
+									<li><a href="/bookingform">Booking</a></li> 
                  <li><a href="/getAllBookings">Reservation Search</a></li>
 									 <% }else { %>
 											<!-- normal user menu -->
@@ -44,7 +45,7 @@
 									</li>
 									<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
 											<!-- log out -->
-								 <li><a href="/">Logout</a>
+								 <li><a href="/logout">Logout</a>
 									</li>
 											<% } %>
 						</ul>
@@ -70,6 +71,7 @@
 							</li>
                 <% if(typeof userRole !== 'undefined' && userRole === '0' ) { %>
 									<!-- admin menu -->
+									 <li><a href="/bookingform">Booking</a></li> 
                  <li><a href="/getAllBookings">Reservation Search</a></li>
 									 <% }else { %>
 											<!-- normal user menu -->
@@ -84,11 +86,9 @@
 								<% } %>
 									<li><a href="/aboutus">About Us</a>
 									</li>
-									<li><a href="/contactus">Contact Us</a>
-									</li>
 									<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
 											<!-- log out -->
-								 <li><a href="/">Logout</a>
+								 <li><a href="/logout">Logout</a>
 									</li>
 											<% } %>
 						</ul>

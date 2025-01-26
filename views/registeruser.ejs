@@ -10,6 +10,11 @@ background: linear-gradient(to bottom, #5691c8, #457fca);">
 <br>
 <br>
 		<main style="margin-top: 10px;">
+				<% if (typeof bannermessage !== 'undefined' && bannermessage) { %>
+            <div class="alert alert-danger" style="text-align: center; font-size: 17px; font-weight: 800; width: 100%;">
+                <strong><%= bannermessage %></strong> 
+            </div>
+        <% } %>
 			<div class="log-in-pop" style=" border-radius:10px;">
 				<div class="log-in-pop-left">
 					<center>
@@ -28,9 +33,9 @@ background: linear-gradient(to bottom, #5691c8, #457fca);">
 								<select name="Role" id="Role" class="userinputcontrols"
 														required>
 														<option value="" disabled selected>Please Select</option>
-														<option value="0">Normal
+														<option value="1">Normal
 														</option>
-														<option value="1">Admin
+														<option value="0">Admin
 														</option>
 													</select>
 							</div>
@@ -58,11 +63,11 @@ background: linear-gradient(to bottom, #5691c8, #457fca);">
 						</div>
 					<div>
 							<div class="input-field s12">
-								<input  style="width: 98.5%;" type="text" id="Password" name="Password" class="form-control validate userinputcontrols">
+								<input  style="width: 98.5%;" type="password" id="Password" name="Password" class="form-control validate userinputcontrols">
 								<label>Password</label>
 							</div>
 								<div class="input-field s12">
-								<input  style="width: 98.5%;" type="text" id="confirmPassword" name="confirmPassword" class="form-control validate userinputcontrols">
+								<input  style="width: 98.5%;" type="password" id="confirmPassword" name="confirmPassword" class="form-control validate userinputcontrols">
 								<label>Confirm Password</label>
 							</div>
 						</div>

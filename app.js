@@ -1,3 +1,7 @@
+process.emitWarning = (warning, type, code, ctor) => {
+  if (code === 'DEP0040') return;
+  process.emitWarning(warning, type, code, ctor);
+};
 // include express, path and body-parser modules
 const express = require('express');
 // include session and other libraries for MFA 
@@ -18,7 +22,7 @@ server.set('views', path.join(__dirname, 'views'));
 // The intergation of MFA libraries for this server
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.json());
-server.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+server.use(session({ secret: 'secret', resave: false, saveUninitialized: true, cookie: { secure: false } }));
 
 // to serve static css files in the public directory.
 server.use(express.static(path.join(__dirname, 'public')));

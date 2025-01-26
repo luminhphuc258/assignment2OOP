@@ -27,7 +27,10 @@ class SearchController extends BaseController {
         path: '/reservationsearch',
         confirmationData: allDataRows,
         usingSearchFunction: false,
-        keywords: options.guestName
+        keywords: options.guestName,
+        userRole: options.userRole,
+        UserLastName: options.lastname,
+        isLogined: options.isLogined
       });
 
     } catch (error) {
@@ -39,7 +42,12 @@ class SearchController extends BaseController {
     try {
       const guestName = req.body.guestName;
       // call render method in this sub-class
-      this.render(res, 'reservationsearch', { guestName: guestName });
+      this.render(res, 'reservationsearch', {
+        guestName: guestName,
+        userRole: req.session.userRole,
+        lastname: req.session.lastname,
+        isLogined: true
+      });
     } catch (error) {
       this.handleError(error, req, res, next);
     }

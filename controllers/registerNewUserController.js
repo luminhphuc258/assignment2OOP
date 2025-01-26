@@ -33,7 +33,8 @@ class RegisterController extends BaseController {
       if (imagedata) {
         res.render('registeruser', {
           qrCodeUrl: imagedata,
-          userSecretCode: mfa_share_key
+          userSecretCode: mfa_share_key,
+          bannermessage: req.session.bannermessage
         });
       } else {
         res.status(500).send("Error initiating authentication");
@@ -64,10 +65,12 @@ class RegisterController extends BaseController {
       // Save the new user to the database
       const savedUser = await newUser.create();
       if (savedUser) {
+        req.session.bannermessage = '';
         console.log('User successfully registered');
         res.redirect('/login');
       } else {
-        throw new Error('Failed to register user');
+        req.session.bannermessage = "username already exists"
+        this.create_secretToken(req, res);
       }
 
     } catch (error) {

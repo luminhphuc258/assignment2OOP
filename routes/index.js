@@ -13,22 +13,44 @@ const router = express.Router();
 // ============================= HANDLE GET REQUESTS FROM CLIENT ====================
 // handle to redirect to main page
 router.get('/', (req, res, next) => {
-  console.log('Redirect to main page');
-  res.render('login', {
-    pageTitle: 'The Panda Restaunt',
-    path: '/',
-  });
+  if (req.session.isLoggedIn === true) {
+    res.render('index', {
+      pageTitle: 'Home Page',
+      userRole: req.session.userRole,
+      UserLastName: req.session.lastname,
+      isLogined: true
+    });
+  } else {
+    res.render('login', {
+      pageTitle: 'Login Page',
+      userRole: req.session.userRole,
+      UserLastName: req.session.lastname,
+      isLogined: false
+    });
+  }
+
 });
 
 // handle to redirect to booking page
 router.get('/bookingform', (req, res, next) => {
   console.log('Redirect to booking page');
-  res.render('tablebooking', {
-    hasErrorInsertedData: false,
-    pageTitle: 'Table Booking',
-    path: '/bookingform',
-  });
-  // res.sendFile(path.join(rootDir, 'views', 'roombooking.html'));
+  // is logined
+  if (req.session.isLoggedIn) {
+    res.render('tablebooking', {
+      hasErrorInsertedData: false,
+      pageTitle: 'Table Booking',
+      path: '/bookingform',
+      userRole: req.session.userRole,
+      UserLastName: req.session.lastname,
+      isLogined: true
+    });
+
+  } else {
+    res.render('login', {
+      pageTitle: 'Login Page',
+      isLogined: false
+    });
+  }
 });
 
 // handle to redirect to contact page
@@ -37,7 +59,11 @@ router.get('/contactus', (req, res, next) => {
   res.render('contact-us', {
     pageTitle: 'Contact Us',
     path: '/contactus',
+    userRole: req.session.userRole,
+    UserLastName: req.session.lastname,
+    isLogined: req.session.isLoggedIn
   });
+
 });
 
 // handle to redirect to about us page
@@ -46,6 +72,9 @@ router.get('/aboutus', (req, res, next) => {
   res.render('about-us', {
     pageTitle: 'About Us',
     path: '/aboutus',
+    userRole: req.session.userRole,
+    UserLastName: req.session.lastname,
+    isLogined: req.session.isLoggedIn
   });
 });
 
@@ -60,6 +89,18 @@ router.get(
   '/getAllBookings',
   bookingController.getAllBookings.bind(bookingController)
 );
+
+// router.get('/getAllBookings', (req, res, next) => {
+//   // is logined
+//   if (req.session.isLoggedIn) {
+//     bookingController.getAllBookings.bind(bookingController)
+//   } else {
+//     res.render('login', {
+//       pageTitle: 'Login Page',
+//       isLogined: false
+//     });
+//   }
+// });
 
 // ============================= HANDLE POST REQUESTS FROM CLIENT ====================
 

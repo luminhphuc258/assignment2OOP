@@ -81,12 +81,27 @@ class LoginModel extends BaseModel {
   //================ implement CURD methods ==================================
   async create() {
     try {
-      const result = await db.execute(
-        'INSERT INTO users (username, password, token, role, firstname, lastname) VALUES (?, ?, ?, ?, ?, ?)',
-        [this.UserName, this.Password, this.Token, this.Role, this.FirstName, this.LastName]
-      );
-      this.userID = result[0].insertId;
-      return result;
+      // First check if a user with the same username already exists
+      const userRef = db.collection('users').where('username', '==', this.UserName);
+      const snapshot = await userRef.get();
+
+      if (!snapshot.empty) {
+        console.error('Username already exists.');
+        return null;
+      }
+
+      // If no existing user, create a new user
+      let docRef = await db.collection('users').add({
+        username: this.UserName,
+        password: this.Password,
+        token: this.Token,
+        role: this.Role,
+        firstname: this.FirstName,
+        lastname: this.LastName
+      });
+
+      console.log('User created successfully with ID:', docRef.id);
+      return docRef;  // Return the document reference
     } catch (error) {
       console.error('Failed to create user:', error);
       throw error;
@@ -95,11 +110,13 @@ class LoginModel extends BaseModel {
 
   async read() {
     try {
-      const [rows, fields] = await db.query(
-        'SELECT DISTINCT * FROM users WHERE userid = ? LIMIT 1',
-        [this.userID]
-      );
-      return rows;
+      const docRef = db.collection('users').doc(this.userID);
+      const doc = await docRef.get();
+      if (doc.exists) {
+        return doc.data();
+      } else {
+        throw new Error('No such document!');
+      }
     } catch (error) {
       console.error('Failed to read user data:', error);
       throw error;
@@ -108,11 +125,17 @@ class LoginModel extends BaseModel {
 
   async update() {
     try {
-      const result = await db.execute(
-        'UPDATE users SET username = ?, password = ?, token = ?, role = ?, firstname = ?, lastname = ? WHERE userid = ?',
-        [this.UserName, this.Password, this.Token, this.Role, this.FirstName, this.LastName, this.userID]
-      );
-      return result;
+      const userRef = db.collection('users').doc(this.userID);
+      const result = await userRef.update({
+        username: this.UserName,
+        password: this.Password,
+        token: this.Token,
+        role: this.Role,
+        firstname: this.FirstName,
+        lastname: this.LastName
+      });
+      console.log('User updated successfully!');
+      return result; // Firestore returns a WriteResult on successful update
     } catch (error) {
       console.error('Failed to update user:', error);
       throw error;
@@ -121,11 +144,10 @@ class LoginModel extends BaseModel {
 
   async delete() {
     try {
-      const result = await db.execute(
-        'DELETE FROM users WHERE userid = ?',
-        [this.userID]
-      );
-      return result;
+      const userRef = db.collection('users').doc(this.userID);
+      await userRef.delete();
+      console.log('User deleted successfully!');
+      return { success: true };
     } catch (error) {
       console.error('Failed to delete user:', error);
       throw error;
@@ -143,20 +165,32 @@ class LoginModel extends BaseModel {
   //=================== implement Authentication functions ============================
   async loginMFA() {
     try {
-      const result = await db.execute(
-        'SELECT * FROM USERS WHERE username = ? AND password = ?',
-        [this.UserName, this.Password]
-      );
-      if (result[0].length > 0) {
-        const user = result[0][0];
-        console.log("Successful confirmation for the user at local level!");
+      const userRef = db.collection('users').where('username', '==', this.UserName);
+      const snapshot = await userRef.get();
+
+      if (!snapshot.empty) {
+        const userDoc = snapshot.docs[0];
+        const user = userDoc.data();
+        const userId = userDoc.id;
+        console.log("loginMFA");
         console.log(user);
-        return user;
+        // Check if the password matches
+        if (user.password === this.Password) {
+          console.log("Successful confirmation for the user at local level!");
+          user.id = userId;
+          console.log(user);
+          return user;
+        } else {
+          console.log("Password does not match");
+          return null;
+        }
       } else {
+        console.log("No user found with the provided username");
         return null;
       }
-    } catch (err) {
-      return null;
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      throw error;
     }
   }
 }

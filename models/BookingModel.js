@@ -37,6 +37,11 @@ class BookingModel extends BaseModel {
   get firstName() {
     return this.#firstName;
   }
+
+  set bookingId(value) {
+    this.#bookingId = value;
+  }
+
   set firstName(value) {
     this.#firstName = value;
   }
@@ -96,23 +101,28 @@ class BookingModel extends BaseModel {
   }
 
   async save() {
-    const bookingResult = await db.execute(
-      'INSERT INTO BOOKING (first_name, last_name, email, phone, number_of_guests, date, time, table_type, special_requests, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        this.#firstName,
-        this.#lastName,
-        this.#email,
-        this.#phone,
-        this.#numberOfGuests,
-        this.#date,
-        this.#time,
-        this.#tableType,
-        this.#specialRequests,
-        this.#status,
-      ]
-    );
-    this.#bookingId = bookingResult[0].insertId ?? null;
-    return this.#bookingId;
+    try {
+      // Add a new document in collection "bookings"
+      const docRef = await db.collection('booking').add({
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        phone: this.phone,
+        numberOfGuests: this.numberOfGuests,
+        date: this.date,
+        time: this.time,
+        tableType: this.tableType,
+        specialRequests: this.specialRequests,
+        status: this.status
+      });
+
+      this.bookingId = docRef.id;
+      console.log('Booking created successfully with ID:', this.bookingId);
+      return this.bookingId;
+    } catch (error) {
+      console.error('Failed to create booking:', error);
+      throw error;
+    }
   }
 
   toJSON() {
@@ -133,36 +143,87 @@ class BookingModel extends BaseModel {
 
   // Method to fecth booking data by booking id
   static async fetchById(id) {
-    const result = await db.execute(
-      'SELECT * FROM BOOKING WHERE booking_id = ?',
-      [id]
-    );
-    return result[0][0] || null;
+    try {
+      const docRef = db.collection('booking').doc(id);
+      const doc = await docRef.get();
+
+      if (doc.exists) {
+        console.log('Document data:', doc.data());
+        return doc.data();
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      throw error;
+    }
   }
 
   // Method to fetch all bookings with complete reservation details
   static async fetchAll() {
     try {
-      const result = await db.execute('SELECT * FROM BOOKING');
-      return result[0]?.length > 0 ? result[0] : null;
+      const collectionRef = db.collection('booking');
+      const snapshot = await collectionRef.get();
+
+      if (!snapshot.empty) {
+        // Maps over each document in the collection
+        const bookings = snapshot.docs.map(doc => ({
+          booking_id: doc.id, // Retrieves and includes the document ID
+          ...doc.data() // Retrieves and includes the rest of the document data
+        }));
+        console.log('Fetched all bookings:', bookings);
+        return bookings;
+      } else {
+        console.log('No bookings found.');
+        return [];
+      }
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      throw error;
+      throw error;  // Proper error handling
     }
   }
 
   // Method to filter bookings by guest name
   static async filterByGuestName(guestName) {
-    const searchPattern = `%${guestName.toLowerCase()}%`;
-    const results = await db.execute(
-      `SELECT * FROM BOOKING 
-       WHERE LOWER(first_name) LIKE ? 
-          OR LOWER(last_name) LIKE ? 
-          OR LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?`,
-      [searchPattern, searchPattern, searchPattern]
-    );
+    let query;
+    const bookingsRef = db.collection('booking');
+    if (guestName) {
+      const guestNameLower = guestName.toLowerCase();
+      const firstNameQuery = bookingsRef.where('firstName', '==', guestNameLower);
+      const lastNameQuery = bookingsRef.where('lastName', '==', guestNameLower);
 
-    return results[0]?.length > 0 ? results[0] : null;
+      // Fetch and combine the results
+      const firstNameSnapshot = await firstNameQuery.get();
+      const lastNameSnapshot = await lastNameQuery.get();
+
+      let matches = [];
+      firstNameSnapshot.forEach(doc => matches.push({ booking_id: doc.id, ...doc.data() }));
+      lastNameSnapshot.forEach(doc => {
+        const docData = { id: doc.id, ...doc.data() };
+        if (!matches.some(match => match.id === docData.id)) {
+          matches.push(docData);
+        }
+      });
+
+      console.log('Matching bookings:', matches);
+      return matches.length > 0 ? matches : null;
+
+    } else {
+      // If no guest name is provided, fetch all documents
+      const snapshot = await bookingsRef.orderBy('lastName', 'asc').get();  // Correct use of orderBy
+      if (!snapshot.empty) {
+        let matches = snapshot.docs.map(doc => ({
+          booking_id: doc.id,
+          ...doc.data()
+        }));
+        console.log('Fetched all bookings:', matches);
+        return matches;
+      } else {
+        console.log('No bookings found.');
+        return [];
+      }
+    }
   }
 }
 

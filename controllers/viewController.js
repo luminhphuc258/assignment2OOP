@@ -14,14 +14,14 @@ class ViewController {
       data.forEach(booking => {
         html += `<tr>
                     <td>${booking.booking_id}</td>
-                    <td>${booking.first_name} ${booking.last_name}</td>
+                    <td>${booking.firstName} ${booking.lastName}</td>
                     <td>${booking.email}</td>
                     <td>${booking.phone}</td>
-                    <td>${booking.number_of_guests}</td>
-                    <td>${booking.date.toLocaleDateString()}</td>
+                    <td>${booking.numberOfGuests}</td>
+                    <td>${booking.date}</td>
                     <td>${booking.time}</td>
-                    <td>${booking.table_type}</td>
-                    <td>${booking.special_requests}</td>
+                    <td>${booking.tableType}</td>
+                    <td>${booking.specialRequests}</td>
                     <td>${booking.status}</td>
                 </tr>`;
       });

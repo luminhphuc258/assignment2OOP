@@ -10,28 +10,39 @@ class LoginController extends BaseController {
 
   // verify account at Google Authenciation level
   async MFA_verification(req, res, next) {
+
     console.log("Calling MFA_verification");
     const user_passcocde = req.body.user_passcocde;
     console.log(user_passcocde);
+
     //get token from model 
     const user = new LoginModel(req.body);
     user.userID = req.body.userID;
     const userInfo = await user.read();
-    const userToken = userInfo[0].token;
+    const userToken = userInfo.token;
+
     //final check with MFA 
     var verified = speakeasy.totp.verify({
       secret: userToken,
       encoding: 'ascii',
       token: user_passcocde
     });
-    console.log(userInfo[0].lastname)
+    console.log(userInfo.lastname)
+
     if (verified) {
+
+      //store session of the users after they login successfully
+      req.session.userId = user.userID;
+      req.session.lastname = userInfo.lastname;
+      req.session.userRole = userInfo.role;
+      req.session.isLoggedIn = true;
+
       // Authentication successful
       console.log("Granted to Access by Google-Authentication!");
       res.render('index', {
         pageTitle: 'Home Page',
-        userRole: user.Role,
-        UserLastName: userInfo[0].lastname,
+        userRole: userInfo.role,
+        UserLastName: userInfo.lastname,
         isLogined: true
       });
     } else {
@@ -48,15 +59,17 @@ class LoginController extends BaseController {
 
   //verify user account at local level
   async login(req, res, next) {
+    console.log("Calling login!");
     const loginmodel = new LoginModel(req.body);
     const user = await loginmodel.loginMFA();
+    console.log(user);
     if (user) {
       // MFA authentication
       console.log('Redirect to MFA setup');
-      console.log(user.userid);
+      console.log(user.id);
       try {
         res.render('googleauthentication', {
-          userID: user.userid,
+          userID: user.id,
         });
 
       } catch (error) {
