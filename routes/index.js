@@ -14,8 +14,8 @@ const router = express.Router();
 // handle to redirect to main page
 router.get('/', (req, res, next) => {
   console.log('Redirect to main page');
-  res.render('index', {
-    pageTitle: 'The Bike Hotel',
+  res.render('login', {
+    pageTitle: 'The Panda Restaunt',
     path: '/',
   });
 });

@@ -1,0 +1,68 @@
+<%- include('includes/head.ejs') %>
+	</head>
+	<body style="background: #457fca;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to bottom, #5691c8, #457fca);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to bottom, #5691c8, #457fca);">
+		<%- include('includes/navigation.ejs') %>
+		<br>
+<br>
+<br>
+<br>
+<br>
+		<main style="margin-top: 10px;">
+		<% if (typeof bannermessage !== 'undefined' && bannermessage) { %>
+            <div class="alert alert-danger" style="text-align: center; font-size: 17px; font-weight: 800; width: 100%;">
+                <strong><%= bannermessage %></strong> 
+            </div>
+        <% } %>
+			<div class="log-in-pop" style=" border-radius:10px;">
+				<div class="log-in-pop-left">
+					<center>
+							<img src="/images/panda_sign.png" style="background-size: contain; height: 90%; width: 90%;">
+					</center>
+				</div>
+				<div class="log-in-pop-right">
+					<b style="text-align: center; font-size: 1.9rem; font-weight: 800;">Login</b>
+				
+					<form class="s12" action="/signin" method="POST">
+							<br>
+						<div>
+							<div class="input-field s12">
+								<input type="text" id="UserName" name="UserName" data-ng-model="name" class="validate">
+								<label>User name</label>
+							</div>
+						</div>
+						<div>
+							<div class="input-field s12">
+								<input type="password" id="Password" name="Password" class="validate">
+								<label>Password</label>
+							</div>
+						</div>
+						<div>
+							<br>
+							<div class="s12 log-ch-bx">
+								<p>
+									<input type="checkbox" id="test5" />
+									<label for="test5">Remember me</label>
+								</p>
+							</div>
+						</div>
+						<br>
+						<div>
+							<div class="input-field s4">
+								<input type="submit" value="Login" class="waves-effect waves-light log-in-btn"> </div>
+						</div>
+						<div>
+							<div class="input-field s12"> <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#modal3">Forgot password</a> | <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#modal2">Create a new account</a> </div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<br>
+		</main>
+		<br>
+<br>
+		<br>
+<br>
+<br>
+			<%- include('includes/end.ejs') %>

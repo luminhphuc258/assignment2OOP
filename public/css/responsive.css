@@ -65,8 +65,14 @@
     }
     .log-in-pop-left {
         width: 100%;
-        padding: 7%;
+      
     }
+
+     .log-in-pop-left img{
+        display: block;
+        width: 124px !important;
+        height: 124px !important;
+     }
     .log-in-pop-right {
         width: 100%;
         padding: 7%;

@@ -11,14 +11,43 @@
 				<div class="mm-menu">
 					<div class="mm-close"><span><i class="fa fa-times hide-menu" aria-hidden="true"></i></span>
 					</div>
-					<ul>
+					<!-- <ul>
 						<li><a href="/">Home</a>
 						</li>
 						<li><a href="/aboutus">About Us</a>
 						</li>
 						<li><a href="/contactus">Contact Us</a>
 						</li>
-					</ul>
+					</ul> -->
+					<ul>
+							<!-- already login -->
+							<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
+								<li><a href="/">Welcome, <%= UserLastName %></a>
+							</li>
+                <% if(typeof userRole !== 'undefined' && userRole === '0' ) { %>
+									<!-- admin menu -->
+                 <li><a href="/getAllBookings">Reservation Search</a></li>
+									 <% }else { %>
+											<!-- normal user menu -->
+											<li><a href="/bookingform">Booking</a></li> 
+										<% } %>
+								<!-- not yet login -->
+								<% } else { %>
+									<li><a href="/register">Sign Up</a>
+									</li>
+									<li><a href="/login">Login</a>
+									</li>
+								<% } %>
+									<li><a href="/aboutus">About Us</a>
+									</li>
+									<li><a href="/contactus">Contact Us</a>
+									</li>
+									<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
+											<!-- log out -->
+								 <li><a href="/">Logout</a>
+									</li>
+											<% } %>
+						</ul>
 				</div>
 			</div>
 		</div>
@@ -35,31 +64,36 @@
 					</div>
 					<div class="top-bar">
 						<ul>
-							<li><a href="/">Home</a>
+							<!-- already login -->
+							<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
+								<li><a href="/">Welcome, <%= UserLastName %></a>
 							</li>
-							<li><a href="/getAllBookings">Reservation Search</a>
-							</li>
-							<li><a href="/bookingform">Booking</a>
-							</li>
-							<li><a href="/aboutus">About Us</a>
-							</li>
-							<li><a href="/contactus">Contact Us</a>
-							</li>
+                <% if(typeof userRole !== 'undefined' && userRole === '0' ) { %>
+									<!-- admin menu -->
+                 <li><a href="/getAllBookings">Reservation Search</a></li>
+									 <% }else { %>
+											<!-- normal user menu -->
+											<li><a href="/bookingform">Booking</a></li> 
+										<% } %>
+								<!-- not yet login -->
+								<% } else { %>
+									<li><a href="/register">Sign Up</a>
+									</li>
+									<li><a href="/login">Login</a>
+									</li>
+								<% } %>
+									<li><a href="/aboutus">About Us</a>
+									</li>
+									<li><a href="/contactus">Contact Us</a>
+									</li>
+									<% if (typeof isLogined !== 'undefined' && isLogined === true) { %>
+											<!-- log out -->
+								 <li><a href="/">Logout</a>
+									</li>
+											<% } %>
 						</ul>
 					</div>
 				</div>
-				<!-- <div class="row">
-					<div class="menu-bar">
-						<ul>
-							<li><a href="/" class='dropdown-button'>Home</a>
-							</li>
-							<li><a href="/getAllBookings" class='dropdown-button'>Reservation Search</a>
-							</li>
-							<li><a href="/bookingform" class='dropdown-button'>Booking</a>
-							</li>
-						</ul>
-					</div>
-				</div> -->
 			</div>
 		</div>
 		<!--TOP SECTION-->

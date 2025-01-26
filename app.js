@@ -1,5 +1,9 @@
 // include express, path and body-parser modules
 const express = require('express');
+// include session and other libraries for MFA 
+const session = require('express-session');
+
+// include a library to set static paths 
 const path = require('path');
 const bodyParser = require('body-parser');
 
@@ -11,8 +15,10 @@ server.set('view engine', 'ejs');
 // server.set('views', 'views');
 server.set('views', path.join(__dirname, 'views'));
 
-// to parse body
+// The intergation of MFA libraries for this server
 server.use(bodyParser.urlencoded({ extended: false }));
+server.use(express.json());
+server.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 
 // to serve static css files in the public directory.
 server.use(express.static(path.join(__dirname, 'public')));
@@ -24,9 +30,11 @@ server.use((error, req, res, next) => {
 //========== update for using controller
 // define route objects
 const indexRoutes = require('./routes/index');
+const loginRoutes = require('./routes/login');
 
 // to register the routes in the server
 server.use(indexRoutes);
+server.use(loginRoutes);
 
 // start the server at specific port at the localhost
 const port = 3000;

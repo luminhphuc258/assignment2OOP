@@ -1619,8 +1619,6 @@ background: linear-gradient(to bottom, #004e92, #000428); /* W3C, IE 10+/ Edge, 
 .log-in-pop-left {
     float: left;
     width: 40%;
-    background: url('../images/login.jpg') no-repeat center center;
-    padding: 11% 6%;
     color: #fff;
     height: 100%;
     bottom: 0px;
@@ -1629,6 +1627,10 @@ background: linear-gradient(to bottom, #004e92, #000428); /* W3C, IE 10+/ Edge, 
 .log-in-pop-left::before {} .log-in-pop-left h1 {
     color: #fff;
     font-size: 32px;
+}
+
+.log-in-pop-left img{
+    margin-top:2%;
 }
 .log-in-pop-left h1 span {
     display: block;
@@ -1680,6 +1682,7 @@ background: linear-gradient(to bottom, #004e92, #000428); /* W3C, IE 10+/ Edge, 
     width: 60%;
     padding: 50px;
 }
+
 .log-in-pop-right h4 {
     font-size: 24px;
     margin-bottom: 20px;
