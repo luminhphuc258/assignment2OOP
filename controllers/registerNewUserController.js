@@ -4,6 +4,7 @@ const LoginModel = require('../models/LoginModel');
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 let mfa_share_key = '';
+let ErrorBannermessage = '';
 class RegisterController extends BaseController {
   constructor() {
     super();
@@ -34,7 +35,7 @@ class RegisterController extends BaseController {
         res.render('registeruser', {
           qrCodeUrl: imagedata,
           userSecretCode: mfa_share_key,
-          bannermessage: req.session.bannermessage
+          bannermessage: ErrorBannermessage
         });
       } else {
         res.status(500).send("Error initiating authentication");
@@ -55,24 +56,28 @@ class RegisterController extends BaseController {
       if (newUser.Password !== confirmPassword) {
         //redirect to register page due to not matching password
         this.create_secretToken(req, res);
-      }
-
-      // check if user set up MFA  propertly
-      if (!this.CheckingPassCodeSetUp(userToken, userPassCode)) {
-        this.create_secretToken(req, res);
-      }
-
-      // Save the new user to the database
-      const savedUser = await newUser.create();
-      if (savedUser) {
-        req.session.bannermessage = '';
-        console.log('User successfully registered');
-        res.redirect('/login');
       } else {
-        req.session.bannermessage = "username already exists"
-        this.create_secretToken(req, res);
-      }
 
+        // check if user set up MFA  propertly
+        if (!this.CheckingPassCodeSetUp(userToken, userPassCode)) {
+          ErrorBannermessage = 'Passcode is incorrect!'
+          this.create_secretToken(req, res);
+        } else {
+          // Save the new user to the database
+          const savedUser = await newUser.create();
+          if (savedUser) {
+            console.log('User successfully registered');
+            res.render('login', {
+              pageTitle: 'Login Page',
+              isLogined: false
+            });
+
+          } else {
+            req.session.bannermessage = "username already exists"
+            this.create_secretToken(req, res);
+          }
+        }
+      }
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).send("Error during registration");
