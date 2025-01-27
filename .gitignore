@@ -9,9 +9,6 @@ yarn-error.log
 .env.local
 .env.*.local
 
-# Database configuration
-utils/database.js
-
 # IDE/Editor folders
 .idea/
 .vscode/
