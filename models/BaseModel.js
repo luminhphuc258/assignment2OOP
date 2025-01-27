@@ -1,26 +1,65 @@
+const db = require('../utils/database');
 //Using abstraction
 class BaseModel {
-  constructor() {
+  constructor(collectionName) {
     if (this.constructor === BaseModel) {
-      throw new Error("Abstract classes can't be instantiated.");
+      throw new Error("BaseModel is an abstract class and cannot be instantiated directly.");
     }
+    this.collection = db.collection(collectionName);
   }
 
   // Implement CRUD 
-  async create() {
-    throw new Error("Method 'create()' must be implemented.");
+  async create(data) {
+    try {
+      const docRef = await this.collection.add(data);
+      console.log('Document written with ID:', docRef.id);
+      return docRef.id; // Return the new document's ID
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      throw error;
+    }
   }
 
-  async read() {
-    throw new Error("Method 'read()' must be implemented.");
+  async read(UserName) {
+    try {
+      const userRef = this.collection.where('username', '==', UserName);
+      const snapshot = await userRef.get();
+
+      if (!snapshot || snapshot.empty) {
+        console.log('No such document or snapshot is undefined!');
+        return null;
+      } else {
+        const userDoc = snapshot.docs[0];
+        const user = userDoc.data();
+        user.docId = userDoc.id;
+        console.log('User data:', user);
+        return user;
+      }
+    } catch (error) {
+      console.error("Error reading document: ", error);
+      throw error;
+    }
   }
 
-  async update() {
-    throw new Error("Method 'update()' must be implemented.");
+  async update(docId, data) {
+    try {
+      await this.collection.doc(docId).update(data);
+      console.log('Document successfully updated!');
+      return true;
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      throw error;
+    }
   }
-
-  async delete() {
-    throw new Error("Method 'delete()' must be implemented.");
+  async delete(docId) {
+    try {
+      await this.collection.doc(docId).delete();
+      console.log('Document successfully deleted!');
+      return true;
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      throw error;
+    }
   }
 
   async save() {

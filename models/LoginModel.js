@@ -12,7 +12,7 @@ class LoginModel extends BaseModel {
   #LastName;
 
   constructor(userAuthenticationData) {
-    super();
+    super("users");
     this.#userID = null;
     this.#UserName = userAuthenticationData.UserName;
     this.#Password = userAuthenticationData.Password;
@@ -165,20 +165,14 @@ class LoginModel extends BaseModel {
   //=================== implement Authentication functions ============================
   async loginMFA() {
     try {
-      const userRef = db.collection('users').where('username', '==', this.UserName);
-      const snapshot = await userRef.get();
-
-      if (!snapshot.empty) {
-        const userDoc = snapshot.docs[0];
-        const user = userDoc.data();
-        const userId = userDoc.id;
+      const user = await super.read(this.UserName);
+      if (user) {
+        const userId = user.docId;
         console.log("loginMFA");
-        console.log(user);
         // Check if the password matches
         if (user.password === this.Password) {
           console.log("Successful confirmation for the user at local level!");
           user.id = userId;
-          console.log(user);
           return user;
         } else {
           console.log("Password does not match");
