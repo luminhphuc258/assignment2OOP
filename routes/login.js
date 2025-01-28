@@ -3,6 +3,7 @@
 const express = require('express');
 const LoginController = require('../controllers/loginController');
 const RegisterController = require('../controllers/registerNewUserController');
+const UsersManagementController = require('../controllers/usersManagementController');
 const router = express.Router();
 
 // ============================= HANDLE GET REQUESTS FROM CLIENT ====================
@@ -20,6 +21,29 @@ router.get('/login', (req, res, next) => {
     path: '/login',
   });
 });
+// HANDLE REQUEST FOR USER MANAGEMENT FORM
+router.get('/usermanagement', (req, res, next) => {
+  if (req.session.isLoggedIn) {
+    console.log('Redirect to user management page');
+    UsersManagementController.getAllUsersData.bind(UsersManagementController)(req, res, next);
+  } else {
+    res.render('login', {
+      pageTitle: 'Login Page',
+      isLogined: false
+    });
+  }
+});
+
+
+router.post(
+  '/deleteuser',
+  UsersManagementController.DeleteUser.bind(UsersManagementController)
+);
+
+router.post(
+  '/usermanagement',
+  UsersManagementController.UpdateUserInfo.bind(UsersManagementController)
+);
 
 // ============================= HANDLE POST REQUESTS FROM CLIENT ====================
 //  handle the POST request to Sign-Up

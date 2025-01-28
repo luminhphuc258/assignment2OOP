@@ -36,5 +36,42 @@ class ViewController {
     }
   }
 
+  //create html content for user accounts
+  async createUsersAccountTable(data) {
+    if (data) {
+      let html = '';
+
+      if (!Array.isArray(data)) {
+        data = [data];
+      }
+
+      data.forEach(usersinfo => {
+        let roletext = '';
+        if (usersinfo.role === '0') {
+          roletext = 'Admin'
+        } else {
+          roletext = "Member"
+        }
+        html += `<tr>
+                    <td>${usersinfo.username}</td>
+                    <td>${usersinfo.lastname}</td>
+                      <td>${usersinfo.firstname}</td>
+                    <td>${usersinfo.password}</td>
+                    <td>${roletext}</td>
+                    <td><button class="btn_edit" userid="${usersinfo.userid}" role="${usersinfo.role}" lastname="${usersinfo.lastname}" firstname="${usersinfo.firstname}" password="${usersinfo.password}" ><i  class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
+                    <td><button class="btn_remove" userid="${usersinfo.userid}"><i  class="fa fa-times" aria-hidden="true"></i></button></td> 
+                </tr>`;
+      });
+
+      return html;
+
+    } else {
+      let html = `<tr>
+                    <td colspan='10' style='color:blue; font-weight:800;'>Data Not Found!</td>
+                    </tr>`;
+      return html;
+    }
+  }
+
 }
 module.exports = new ViewController();

@@ -1,0 +1,191 @@
+<%- include('includes/head.ejs') %>
+	</head>
+
+	<body>
+		<%- include('includes/navigation.ejs') %>
+			<main>
+				<div class="hom-body-section">
+					<div class="container">
+						<div class="row">
+							<div class="container">
+								<div class="row">
+									<div class="page-head">
+										<h2>User Management</h2>
+										<div class="head-title">
+											<div class="hl-1"></div>
+											<div class="hl-2"></div>
+											<div class="hl-3"></div>
+										</div>
+											<!-- search section -->
+									</div>
+								</div>
+							</div>
+							<% if(typeof ViewContent !=='undefined' && ViewContent !==null ) { %>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="head-typo typo-com" style="overflow-x: scroll;">
+												<h2>Users Data</h2>
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>Email</th>
+															<th>First Name</th>
+															<th>Last Name</th>
+															<th>Password</th>
+															<th>Role</th>
+															<th>Edit</th>
+															<th>Delete</th>
+														</tr>
+													</thead> 
+													<!-- the area for table body -->
+													 <tbody>
+															<%- ViewContent %>
+													 </tbody>
+													<!-- end -->
+												</table>
+											</div>
+										</div>
+									</div>
+											<% } %>
+						</div>
+					</div>
+				</div>
+				<!-- modal  -->
+				 <!-- Modal Structure -->
+<div id="updateUserModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="font-size: 15px;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Update User Details</h4>
+      </div>
+      <div class="modal-body">
+        <form id="updateUserForm">
+          <div class="form-group">
+            <label for="firstName"  style="font-size: 15px; color: black; font-weight: 400;">First Name</label>
+            <input type="text" class="form-control" id="firstName" placeholder="First Name">
+          </div>
+          <div class="form-group">
+            <label for="lastName"  style="font-size: 15px; color: black; font-weight: 400;">Last Name</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Last Name">
+          </div>
+          <div class="form-group">
+            <label for="password"  style="font-size: 15px; color: black; font-weight: 400;">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        &nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="updateUserInfo()">Save changes</button>
+				<input type="text" class="form-control" id="useridSelected" style="display: none;">
+				<input type="text" class="form-control" id="RoleSelected" style="display: none;">
+      </div>
+    </div>
+  </div>
+</div>
+				 <!-- end -->
+			</main>
+			<%- include('includes/end.ejs') %>
+					<!-- Include Bootstrap JavaScript and its dependencies -->
+					 		<script>
+								function updateUserInfo(){
+									const userData = {
+													UserId: $('#useridSelected').val(),
+													LastName: $('#lastName').val(),
+													FirstName: $('#firstName').val(),
+													Password: $('#password').val()
+											};
+
+									fetch('/usermanagement', {
+											method: 'POST',
+											headers: {
+													'Content-Type': 'application/json',
+											},
+											body: JSON.stringify(userData), 
+									})
+									.then(response => response.json()) 
+									.then(data => {
+											 if (data.success) {
+												alert('Update successful!');
+												window.location.reload();
+											} else {
+													alert('Cannot update!');
+											}
+											$('#updateUserModal').modal('hide');
+									})
+									.catch((error) => {
+											console.error('Error:', error);
+									});
+
+								}
+								document.addEventListener('DOMContentLoaded', function () {
+
+    							// Attach click event listeners to all buttons with class 'btn_edit'
+
+								var editButtons = document.querySelectorAll('.btn_edit');
+
+								editButtons.forEach(function(button) {
+
+										button.addEventListener('click', function(event) {
+												var btn = event.currentTarget;
+												// Retrieve attributes from the clicked button
+												var userId = btn.getAttribute('userid');
+												var role = btn.getAttribute('role');
+												var lastName = btn.getAttribute('lastname');
+												var firstName = btn.getAttribute('firstname');
+												var password = btn.getAttribute('password');
+
+												// Show the modal and populate data
+												showModalWithData(userId, role, lastName, firstName, password);
+										});
+								});
+								// ===================== delete account
+
+									var removeButtons = document.querySelectorAll('.btn_remove');
+
+									removeButtons.forEach(function(button) {
+										button.addEventListener('click', function(event) {
+												var btn = event.currentTarget; 
+												// Retrieve attributes from the clicked button
+												var userId = btn.getAttribute('userid');
+												// CALL CONTROLLER TO DELETE THIS USER
+												fetch('/deleteuser', { 
+														method: 'POST', 
+														headers: {
+																'Content-Type': 'application/json',
+														},
+														body: JSON.stringify({ UserId: userId })
+												})
+												.then(response => response.json())
+												.then(data => {
+														if (data.success) {
+																alert('User deleted successfully!');
+																window.location.reload();
+														} else {
+																alert('Failed to delete user.');
+														}
+												})
+												.catch(error => {
+														console.error('Error:', error);
+														alert('An error occurred while deleting the user.');
+												});
+												// ---end call
+										});
+								});
+
+						});
+
+							function showModalWithData(userId, role, lastName, firstName, password) {
+									// Assume modal inputs have appropriate IDs
+									$('#firstName').val(firstName);
+									$('#lastName').val(lastName);
+									$('#password').val(password);
+									$('#useridSelected').val(userId);
+									$('#RoleSelected').val(role);
+									$('#updateUserModal').modal('show');
+							}
+
+					</script>
+					<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

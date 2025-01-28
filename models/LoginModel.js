@@ -14,12 +14,12 @@ class LoginModel extends BaseModel {
   constructor(userAuthenticationData) {
     super("users");
     this.#userID = null;
-    this.#UserName = userAuthenticationData.UserName;
-    this.#Password = userAuthenticationData.Password;
-    this.#Token = userAuthenticationData.Token;
-    this.#Role = userAuthenticationData.Role;
-    this.#FirstName = userAuthenticationData.FirstName;
-    this.#LastName = userAuthenticationData.LastName;
+    this.#UserName = userAuthenticationData.UserName || '';
+    this.#Password = userAuthenticationData.Password || '';
+    this.#Token = userAuthenticationData.Token || '';
+    this.#Role = userAuthenticationData.Role || '';
+    this.#FirstName = userAuthenticationData.FirstName || '';
+    this.#LastName = userAuthenticationData.LastName || '';
   }
 
   // Getters and setters
@@ -113,7 +113,11 @@ class LoginModel extends BaseModel {
       const docRef = db.collection('users').doc(this.userID);
       const doc = await docRef.get();
       if (doc.exists) {
-        return doc.data();
+        const userinfo = doc.data();
+        userinfo.userid = this.userID;
+        console.log(userinfo);
+        console.log("---------------------");
+        return userinfo;
       } else {
         throw new Error('No such document!');
       }
@@ -123,27 +127,9 @@ class LoginModel extends BaseModel {
     }
   }
 
-  async update() {
-    try {
-      const userRef = db.collection('users').doc(this.userID);
-      const result = await userRef.update({
-        username: this.UserName,
-        password: this.Password,
-        token: this.Token,
-        role: this.Role,
-        firstname: this.FirstName,
-        lastname: this.LastName
-      });
-      console.log('User updated successfully!');
-      return result; // Firestore returns a WriteResult on successful update
-    } catch (error) {
-      console.error('Failed to update user:', error);
-      throw error;
-    }
-  }
-
   async delete() {
     try {
+      console.log("Call delete users");
       const userRef = db.collection('users').doc(this.userID);
       await userRef.delete();
       console.log('User deleted successfully!');

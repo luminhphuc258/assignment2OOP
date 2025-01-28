@@ -41,6 +41,7 @@ class LoginController extends BaseController {
       console.log("Granted to Access by Google-Authentication!");
       res.render('index', {
         pageTitle: 'Home Page',
+        path: '/',
         userRole: userInfo.role,
         UserLastName: userInfo.lastname,
         isLogined: true
