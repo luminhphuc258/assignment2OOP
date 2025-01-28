@@ -30,7 +30,6 @@ A modern, full-featured restaurant website built with Node.js and Express, featu
 
 - Node.js (v12 or higher)
 - npm (Node Package Manager)
-- MySQL Server
 
 ## Installation
 
@@ -48,10 +47,10 @@ npm install
 ## Configure the database
    - Use a Json key to connect the firebase database
    - Or you can create a new database, includes two tables (users and booking)
+   
+  ![Example Image](users.jpg)
  
-    ![Alt text](users.jpg)
-
-    ![Alt text](bookings.jpg)
+  ![Example Image](bookings.jpg)
 
 
    The application will be available at `http://localhost:3000`
