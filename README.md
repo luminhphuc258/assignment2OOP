@@ -2,7 +2,7 @@
 
 # New Updates for Panda Restaurant Website
 
-![Restaurant Preview](new_version_panda_restaurant.mp4)
+[![Watch the video](new_version_panda_restaurant.mp4)
 
 A modern, full-featured restaurant website built with Node.js and Express, featuring a responsive design and dynamic content management.
 
@@ -47,10 +47,10 @@ npm install
 ## Configure the database
    - Use a Json key to connect the firebase database
    - Or you can create a new database, includes two tables (users and booking)
+ 
+    ![Alt text](users.jpg)
 
-   ![Restaurant Preview](users.jpg)
-
-   ![Restaurant Preview](bookings.jpg)
+    ![Alt text](bookings.jpg)
 
 
    The application will be available at `http://localhost:3000`
