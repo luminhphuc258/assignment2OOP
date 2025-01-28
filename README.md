@@ -46,8 +46,11 @@ npm install
 
 ## Configure the database
    - Use a Json key to connect the firebase database
-   - Or you can create a new database, includes two tables (users and booking)
-   - 
-![Example Image](bookings.JPG)
+   - Or you can create a new database, includes two tables (users and booking) 
+   - booking 
+   ![Example Image](bookings.JPG)
+
+   - users
+   ![Example Image](users.JPG)
 
    The application will be available at `http://localhost:3000`
