@@ -166,6 +166,7 @@ class LoginModel extends BaseModel {
   async loginMFA() {
     try {
       const user = await super.read(this.UserName);
+      console.log(user);
       if (user) {
         const userId = user.docId;
         console.log("loginMFA");
