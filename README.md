@@ -2,7 +2,8 @@
 
 # New Updates for Panda Restaurant Website
 
-[![Watch the video](new_version_panda_restaurant.mp4)
+![Restaurant Preview](new_version_panda_restaurant.gif)
+
 
 A modern, full-featured restaurant website built with Node.js and Express, featuring a responsive design and dynamic content management.
 
